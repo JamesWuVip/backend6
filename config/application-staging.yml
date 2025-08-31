@@ -1,0 +1,112 @@
+# 测试环境配置
+spring:
+  profiles:
+    active: staging
+  
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 10
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1200000
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD}
+    timeout: 2000ms
+    lettuce:
+      pool:
+        max-active: 16
+        max-idle: 8
+        min-idle: 2
+  
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+  
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /api
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    com.wanli: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+    root: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/wanli-backend-staging.log
+    max-size: 100MB
+    max-history: 30
+
+jwt:
+  secret: ${JWT_SECRET_STAGING}
+  expiration: 86400000 # 24 hours
+
+app:
+  cors:
+    allowed-origins: ${CORS_ORIGINS_STAGING:https://staging.wanli.com}
+  file:
+    upload-path: /app/uploads
+    max-size: 10MB
+  mail:
+    from: ${MAIL_USERNAME}
+    from-name: "万里后端系统 (测试)"
+
+# Sentry 错误追踪
+sentry:
+  dsn: ${SENTRY_DSN_STAGING}
+  environment: staging
+  traces-sample-rate: 0.1
+
+# 测试环境特定配置
+debug: false
