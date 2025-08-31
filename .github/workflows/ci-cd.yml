@@ -54,7 +54,7 @@ jobs:
       run: |
         mvn clean test \
           -Dspring.profiles.active=unit-test \
-          -Dtest="LoginControllerTest,LoginServiceTest,*ExceptionHandlingTest,!*IntegrationTest"
+          '-Dtest=!*IntegrationTest,!*E2ETest,!*SecurityTest'
     
     - name: Run integration tests
       run: |
