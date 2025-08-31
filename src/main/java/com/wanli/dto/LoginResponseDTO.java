@@ -2,16 +2,16 @@ package com.wanli.dto;
 
 import java.time.LocalDateTime;
 
-public class LoginResponseDto {
+public class LoginResponseDTO {
 
     private String token;
     private UserInfoDto user;
     private long expiresIn;
 
     // Constructors
-    public LoginResponseDto() {}
+    public LoginResponseDTO() {}
 
-    public LoginResponseDto(String token, UserInfoDto user, long expiresIn) {
+    public LoginResponseDTO(String token, UserInfoDto user, long expiresIn) {
         this.token = token;
         this.user = user;
         this.expiresIn = expiresIn;

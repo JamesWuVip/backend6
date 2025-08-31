@@ -1,8 +1,7 @@
 package com.wanli.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuator.health.Health;
-import org.springframework.boot.actuator.health.HealthIndicator;
+
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +23,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/actuator")
-public class HealthController implements HealthIndicator {
+public class HealthController {
 
     @Autowired
     private DataSource dataSource;
@@ -177,8 +176,12 @@ public class HealthController implements HealthIndicator {
         return result;
     }
 
-    @Override
-    public Health health() {
+    /**
+     * Spring Boot Actuator健康检查方法
+     * @return 健康检查结果
+     */
+    @GetMapping("/health/actuator")
+    public ResponseEntity<Map<String, Object>> actuatorHealth() {
         try {
             // 检查数据库
             Connection connection = dataSource.getConnection();
@@ -190,21 +193,23 @@ public class HealthController implements HealthIndicator {
             boolean redisHealthy = "PONG".equals(redisConnection.ping());
             redisConnection.close();
             
+            Map<String, Object> health = new HashMap<>();
             if (dbHealthy && redisHealthy) {
-                return Health.up()
-                        .withDetail("database", "UP")
-                        .withDetail("redis", "UP")
-                        .build();
+                health.put("status", "UP");
+                health.put("database", "UP");
+                health.put("redis", "UP");
+                return ResponseEntity.ok(health);
             } else {
-                return Health.down()
-                        .withDetail("database", dbHealthy ? "UP" : "DOWN")
-                        .withDetail("redis", redisHealthy ? "UP" : "DOWN")
-                        .build();
+                health.put("status", "DOWN");
+                health.put("database", dbHealthy ? "UP" : "DOWN");
+                health.put("redis", redisHealthy ? "UP" : "DOWN");
+                return ResponseEntity.status(503).body(health);
             }
         } catch (Exception e) {
-            return Health.down()
-                    .withDetail("error", e.getMessage())
-                    .build();
+            Map<String, Object> health = new HashMap<>();
+            health.put("status", "DOWN");
+            health.put("error", e.getMessage());
+            return ResponseEntity.status(503).body(health);
         }
     }
 }

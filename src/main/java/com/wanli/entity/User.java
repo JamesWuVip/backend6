@@ -84,7 +84,8 @@ public class User {
     public enum UserStatus {
         ACTIVE,    // 活跃
         INACTIVE,  // 非活跃
-        SUSPENDED  // 暂停
+        SUSPENDED, // 暂停
+        DELETED    // 已删除
     }
 
     // 构造函数
@@ -144,6 +145,22 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    /**
+     * 获取手机号码（兼容方法）
+     * @return 手机号码
+     */
+    public String getPhoneNumber() {
+        return phone;
+    }
+
+    /**
+     * 设置手机号码（兼容方法）
+     * @param phoneNumber 手机号码
+     */
+    public void setPhoneNumber(String phoneNumber) {
+        this.phone = phoneNumber;
     }
 
     public String getAvatarUrl() {
