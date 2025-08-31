@@ -14,7 +14,7 @@ jobs:
   # 测试阶段
   test:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/dev'
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging'
     
     services:
       mysql:
@@ -80,7 +80,7 @@ jobs:
   # 安全扫描
   security:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/dev'
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging'
     
     steps:
     - name: Checkout code
