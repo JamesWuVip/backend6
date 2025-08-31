@@ -1,7 +1,5 @@
 package com.wanli.dto;
 
-import java.time.LocalDateTime;
-
 public class LoginResponseDTO {
 
     private String token;
