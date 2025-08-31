@@ -50,15 +50,22 @@ jobs:
           sleep 2
         done
     
-    - name: Run tests
+    - name: Run unit tests
       run: |
         mvn clean test \
-          -Dspring.profiles.active=test \
+          -Dspring.profiles.active=unit-test \
+          -Dtest="LoginControllerTest,LoginServiceTest,*ExceptionHandlingTest,!*IntegrationTest"
+    
+    - name: Run integration tests
+      run: |
+        mvn test \
+          -Dspring.profiles.active=integration \
           -Dspring.datasource.url=jdbc:mysql://localhost:3306/wanli_test \
           -Dspring.datasource.username=root \
-          -Dspring.datasource.password=test_password \
+          -Dspring.datasource.password=password \
           -Dspring.data.redis.host=localhost \
-          -Dspring.data.redis.port=6379
+          -Dspring.data.redis.port=6379 \
+          -Dtest="*IntegrationTest,DatabaseConnectionTest"
     
     - name: Generate test report
       run: mvn jacoco:report
